@@ -290,8 +290,7 @@
     <div class="card">
       <div class="section-label">Clientes</div>
       <div id="clientes-container"></div>
-      <button type="button" class="btn-add-cliente" id="btn-add-cliente" disabled
-              style="opacity:0.4;cursor:not-allowed;">
+      <button type="button" class="btn-add-cliente" id="btn-add-cliente">
         <span style="font-size:1.2rem">＋</span> Agregar Cliente
       </button>
     </div>
@@ -525,4 +524,21 @@ function showToast(msg, type = '') {
 }
 
 // ─── INIT ────────────────────────────────────────────────────────
-const btnAddCliente = document.get
+const btnAddCliente = document.getElementById('btn-add-cliente');
+const selectEquipo  = document.getElementById('equipo');
+
+function setBotonCliente() {
+  const habilitado = selectEquipo.value !== '';
+  btnAddCliente.style.opacity        = habilitado ? '1' : '0.4';
+  btnAddCliente.style.cursor         = habilitado ? 'pointer' : 'not-allowed';
+  btnAddCliente.style.pointerEvents  = habilitado ? 'auto' : 'none';
+}
+
+// estado inicial
+setBotonCliente();
+
+selectEquipo.addEventListener('change', setBotonCliente);
+btnAddCliente.addEventListener('click', addCliente);
+</script>
+</body>
+</html>
