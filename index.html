@@ -495,17 +495,17 @@ document.getElementById('mainForm').addEventListener('submit', async (e) => {
   btn.textContent = 'Enviando…';
 
   try {
-    const res = await fetch(WEBHOOK_URL, {
+    await fetch(WEBHOOK_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      mode: 'no-cors',
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     showToast('✅ ¡Enviado correctamente! Gracias.', 'success');
     document.getElementById('mainForm').reset();
     document.getElementById('clientes-container').innerHTML = '';
     clienteCount = 0;
+    setBotonCliente();
   } catch (err) {
     console.error(err);
     showToast('Error al enviar. Verificá tu conexión e intentá de nuevo.', 'error');
