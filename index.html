@@ -300,6 +300,7 @@
 </div>
 
 <div id="toast"></div>
+<iframe name="hidden-iframe" style="display:none"></iframe>
 
 <script>
 // ─── CONFIGURACIÓN ───────────────────────────────────────────────
@@ -495,11 +496,8 @@ document.getElementById('mainForm').addEventListener('submit', async (e) => {
   btn.textContent = 'Enviando…';
 
   try {
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify(data),
-    });
+    // Envío via iframe oculto para evitar restricciones CORS de Google Apps Script
+    await submitViaIframe(data);
 
     showToast('✅ ¡Enviado correctamente! Gracias.', 'success');
     document.getElementById('mainForm').reset();
@@ -515,30 +513,31 @@ document.getElementById('mainForm').addEventListener('submit', async (e) => {
   }
 });
 
+// ─── SUBMIT VIA IFRAME (evita CORS de Google Apps Script) ────────
+function submitViaIframe(data) {
+  return new Promise((resolve) => {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = WEBHOOK_URL;
+    form.target = 'hidden-iframe';
+
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = 'data';
+    input.value = JSON.stringify(data);
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    // Esperar un momento para que el iframe procese la respuesta
+    setTimeout(resolve, 1500);
+  });
+}
+
 // ─── TOAST ───────────────────────────────────────────────────────
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.className = `show ${type}`;
-  setTimeout(() => { t.className = ''; }, 4000);
-}
-
-// ─── INIT ────────────────────────────────────────────────────────
-const btnAddCliente = document.getElementById('btn-add-cliente');
-const selectEquipo  = document.getElementById('equipo');
-
-function setBotonCliente() {
-  const habilitado = selectEquipo.value !== '';
-  btnAddCliente.style.opacity        = habilitado ? '1' : '0.4';
-  btnAddCliente.style.cursor         = habilitado ? 'pointer' : 'not-allowed';
-  btnAddCliente.style.pointerEvents  = habilitado ? 'auto' : 'none';
-}
-
-// estado inicial
-setBotonCliente();
-
-selectEquipo.addEventListener('change', setBotonCliente);
-btnAddCliente.addEventListener('click', addCliente);
-</script>
-</body>
-</html>
