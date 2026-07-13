@@ -1,543 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Formulario de Versiones – Dex</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f0f2f5;
-      color: #1a1a2e;
-      min-height: 100vh;
-      padding: 32px 16px 64px;
-    }
-
-    .container {
-      max-width: 780px;
-      margin: 0 auto;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
-
-    .header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      letter-spacing: -0.5px;
-    }
-
-    .header p {
-      color: #6b7280;
-      margin-top: 6px;
-      font-size: 0.95rem;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      margin-bottom: 20px;
-    }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #9ca3af;
-      margin-bottom: 12px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 6px;
-    }
-
-    select, input[type="text"] {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      color: #1a1a2e;
-      background: #fafafa;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-    }
-
-    select:focus, input[type="text"]:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
-      background: #fff;
-    }
-
-    /* ── CLIENTES ─────────────────────────────── */
-    .cliente-card {
-      background: #f8f9ff;
-      border: 1.5px solid #e0e3f8;
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 16px;
-      position: relative;
-    }
-
-    .cliente-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-    }
-
-    .cliente-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #6366f1;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .btn-remove {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #ef4444;
-      font-size: 1.1rem;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: background 0.15s;
-      line-height: 1;
-    }
-
-    .btn-remove:hover { background: #fee2e2; }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    @media (max-width: 520px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-
-    /* ── PRODUCTOS ─────────────────────────────── */
-    .productos-label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #6b7280;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .producto-row {
-      display: grid;
-      grid-template-columns: 1fr 130px 36px;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    @media (max-width: 520px) {
-      .producto-row { grid-template-columns: 1fr 100px 36px; }
-    }
-
-    .producto-row select { font-size: 0.85rem; padding: 9px 10px; }
-    .producto-row input  { font-size: 0.85rem; padding: 9px 10px; }
-
-    .version-input::placeholder { color: #b0b8c4; font-size: 0.8rem; }
-
-    .btn-del-producto {
-      background: none;
-      border: 1.5px solid #fca5a5;
-      color: #ef4444;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      height: 38px;
-      width: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s;
-    }
-
-    .btn-del-producto:hover { background: #fee2e2; }
-
-    .btn-add-producto {
-      margin-top: 4px;
-      background: none;
-      border: 1.5px dashed #c7d2fe;
-      color: #6366f1;
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      transition: background 0.15s, border-color 0.15s;
-      width: 100%;
-    }
-
-    .btn-add-producto:hover { background: #eef2ff; border-color: #6366f1; }
-
-    /* ── BOTONES PRINCIPALES ───────────────────── */
-    .btn-add-cliente {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 13px;
-      border: 2px dashed #c7d2fe;
-      background: none;
-      color: #6366f1;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      margin-bottom: 24px;
-    }
-
-    .btn-add-cliente:hover { background: #eef2ff; border-color: #6366f1; }
-
-    .btn-submit {
-      width: 100%;
-      padding: 15px;
-      background: #6366f1;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      letter-spacing: 0.02em;
-    }
-
-    .btn-submit:hover  { background: #4f46e5; }
-    .btn-submit:active { transform: scale(0.99); }
-    .btn-submit:disabled { background: #a5b4fc; cursor: not-allowed; }
-
-    /* ── TOAST ─────────────────────────────────── */
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #1a1a2e;
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      pointer-events: none;
-      z-index: 999;
-      text-align: center;
-      max-width: 360px;
-    }
-
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    #toast.error { background: #ef4444; }
-    #toast.success { background: #10b981; }
-
-    .field-group { margin-bottom: 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte de Versiones</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 32px 16px 64px; }
+.container { max-width: 780px; margin: 0 auto; }
+h1 { text-align: center; font-size: 1.8rem; color: #1a1a2e; margin-bottom: 6px; }
+.sub { text-align: center; color: #6b7280; margin-bottom: 32px; font-size: 0.95rem; }
+.card { background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 20px; }
+.label-sec { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 14px; }
+label { display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+select, input[type=text] { width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 0.9rem; color: #1a1a2e; background: #fafafa; outline: none; }
+select:focus, input[type=text]:focus { border-color: #6366f1; background: #fff; }
+.cliente-card { background: #f8f9ff; border: 1.5px solid #e0e3f8; border-radius: 14px; padding: 22px; margin-bottom: 16px; }
+.cliente-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cliente-title { font-size: 0.85rem; font-weight: 700; color: #6366f1; text-transform: uppercase; }
+.btn-x { background: none; border: none; color: #ef4444; font-size: 1rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+.btn-x:hover { background: #fee2e2; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+@media(max-width:520px){ .grid2 { grid-template-columns: 1fr; } }
+.prod-label { font-size: 0.8rem; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 10px; }
+.prod-row { display: grid; grid-template-columns: 1fr 130px 36px; gap: 8px; align-items: center; margin-bottom: 8px; }
+@media(max-width:520px){ .prod-row { grid-template-columns: 1fr 90px 32px; } }
+.prod-row select, .prod-row input { font-size: 0.85rem; padding: 9px 10px; }
+.btn-del { background: none; border: 1.5px solid #fca5a5; color: #ef4444; border-radius: 8px; cursor: pointer; width: 36px; height: 36px; font-size: 0.9rem; }
+.btn-del:hover { background: #fee2e2; }
+.btn-add-prod { width: 100%; margin-top: 4px; background: none; border: 1.5px dashed #c7d2fe; color: #6366f1; border-radius: 9px; cursor: pointer; font-size: 0.82rem; font-weight: 600; padding: 7px 14px; }
+.btn-add-prod:hover { background: #eef2ff; }
+.btn-add-cliente { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border: 2px dashed #c7d2fe; background: none; color: #6366f1; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-bottom: 24px; }
+.btn-add-cliente:hover { background: #eef2ff; }
+.btn-add-cliente.disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-submit { width: 100%; padding: 15px; background: #6366f1; color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.btn-submit:hover { background: #4f46e5; }
+.btn-submit:disabled { background: #a5b4fc; cursor: not-allowed; }
+#toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 999; max-width: 360px; text-align: center; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.error { background: #ef4444; }
+#toast.success { background: #10b981; }
+</style>
 </head>
 <body>
-
 <div class="container">
-  <div class="header">
-    <h1>Reporte de Versiones</h1>
-    <p>Completá la información de tu equipo, clientes y productos.</p>
+  <h1>Reporte de Versiones</h1>
+  <p class="sub">Completa la informacion de tu equipo, clientes y productos.</p>
+
+  <div class="card">
+    <div class="label-sec">Equipo</div>
+    <label for="equipo">Selecciona tu equipo *</label>
+    <select id="equipo">
+      <option value="">-- Selecciona --</option>
+      <option value="Negro">Negro</option>
+      <option value="Blanco">Blanco</option>
+      <option value="Amarillo">Amarillo</option>
+      <option value="SIA Europa">SIA Europa</option>
+    </select>
   </div>
 
-  <form id="mainForm" novalidate>
+  <div class="card">
+    <div class="label-sec">Clientes</div>
+    <div id="clientes-container"></div>
+    <button type="button" id="btn-add-cliente" class="btn-add-cliente disabled">+ Agregar Cliente</button>
+  </div>
 
-    <!-- EQUIPO -->
-    <div class="card">
-      <div class="section-label">Equipo</div>
-      <div class="field-group">
-        <label for="equipo">Seleccioná tu equipo *</label>
-        <select id="equipo" name="equipo" required>
-          <option value="" disabled selected>— Seleccioná —</option>
-          <option value="Negro">Negro</option>
-          <option value="Blanco">Blanco</option>
-          <option value="Amarillo">Amarillo</option>
-          <option value="SIA Europa">SIA Europa</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- CLIENTES -->
-    <div class="card">
-      <div class="section-label">Clientes</div>
-      <div id="clientes-container"></div>
-      <button type="button" class="btn-add-cliente" id="btn-add-cliente">
-        <span style="font-size:1.2rem">＋</span> Agregar Cliente
-      </button>
-    </div>
-
-    <button type="submit" class="btn-submit" id="btn-submit">Enviar</button>
-  </form>
+  <button type="button" id="btn-submit" class="btn-submit">Enviar</button>
 </div>
 
 <div id="toast"></div>
-<iframe name="hidden-iframe" style="display:none"></iframe>
+<iframe name="iframe-oculto" style="display:none"></iframe>
 
 <script>
-// ─── CONFIGURACIÓN ───────────────────────────────────────────────
-const WEBHOOK_URL = 'https://script.google.com/a/macros/siainteractive.com/s/AKfycbwF4N446qJnVzIzR8Gky2jOwB6h72LcoT7j9sd9pFqDbjV-Drzug3wC0wjiVZnYZaJz/exec';
+var WEBHOOK = 'https://script.google.com/a/macros/siainteractive.com/s/AKfycbwF4N446qJnVzIzR8Gky2jOwB6h72LcoT7j9sd9pFqDbjV-Drzug3wC0wjiVZnYZaJz/exec';
 
-// ─── DATOS ───────────────────────────────────────────────────────
-const PRODUCTOS = [
-  'Dex Studio',
-  'Dex Vision',
-  'Dex Manager - Player',
-  'Dex Manager - Dex Store',
-  'Dex Manager - Templates',
-  'Self Order',
-];
+var PRODUCTOS = ['Dex Studio','Dex Vision','Dex Manager - Player','Dex Manager - Dex Store','Dex Manager - Templates','Self Order'];
 
-const PAISES = [
-  'Afganistán','Albania','Alemania','Andorra','Angola','Antigua y Barbuda',
-  'Arabia Saudita','Argelia','Argentina','Armenia','Australia','Austria',
-  'Azerbaiyán','Bahamas','Bangladés','Barbados','Baréin','Bélgica','Belice',
-  'Benín','Bielorrusia','Bolivia','Bosnia y Herzegovina','Botsuana','Brasil',
-  'Brunéi','Bulgaria','Burkina Faso','Burundi','Bután','Cabo Verde',
-  'Camboya','Camerún','Canadá','Catar','Chad','Chile','China','Chipre',
-  'Colombia','Comoras','Congo','Corea del Norte','Corea del Sur',
-  'Costa de Marfil','Costa Rica','Croacia','Cuba','Dinamarca','Dominica',
-  'Ecuador','Egipto','El Salvador','Emiratos Árabes Unidos','Eritrea',
-  'Eslovaquia','Eslovenia','España','Estados Unidos','Estonia','Esuatini',
-  'Etiopía','Fiyi','Filipinas','Finlandia','Francia','Gabón','Gambia',
-  'Georgia','Ghana','Granada','Grecia','Guatemala','Guinea','Guinea-Bisáu',
-  'Guinea Ecuatorial','Guyana','Haití','Honduras','Hungría','India',
-  'Indonesia','Irak','Irán','Irlanda','Islandia','Islas Marshall',
-  'Islas Salomón','Israel','Italia','Jamaica','Japón','Jordania',
-  'Kazajistán','Kenia','Kirguistán','Kiribati','Kuwait','Laos','Lesoto',
-  'Letonia','Líbano','Liberia','Libia','Liechtenstein','Lituania',
-  'Luxemburgo','Madagascar','Malasia','Malaui','Maldivas','Malí','Malta',
-  'Marruecos','Mauricio','Mauritania','México','Micronesia','Moldavia',
-  'Mónaco','Mongolia','Montenegro','Mozambique','Namibia','Nauru','Nepal',
-  'Nicaragua','Níger','Nigeria','Noruega','Nueva Zelanda','Omán',
-  'Países Bajos','Pakistán','Palaos','Palestina','Panamá',
-  'Papúa Nueva Guinea','Paraguay','Perú','Polonia','Portugal',
-  'Reino Unido','República Centroafricana','República Checa',
-  'República del Congo','República Dominicana','Ruanda','Rumanía','Rusia',
-  'Samoa','San Cristóbal y Nieves','San Marino','San Vicente y Granadinas',
-  'Santa Lucía','Santo Tomé y Príncipe','Senegal','Serbia','Seychelles',
-  'Sierra Leona','Singapur','Siria','Somalia','Sri Lanka','Sudáfrica',
-  'Sudán','Sudán del Sur','Suecia','Suiza','Surinam','Tailandia',
-  'Tanzania','Tayikistán','Timor Oriental','Togo','Tonga',
-  'Trinidad y Tobago','Túnez','Turkmenistán','Turquía','Tuvalu','Ucrania',
-  'Uganda','Uruguay','Uzbekistán','Vanuatu','Venezuela','Vietnam',
-  'Yemen','Yibuti','Zambia','Zimbabue',
-];
+var PAISES = ['Afganistan','Albania','Alemania','Andorra','Angola','Antigua y Barbuda','Arabia Saudita','Argelia','Argentina','Armenia','Australia','Austria','Azerbaiyan','Bahamas','Banglades','Barbados','Barein','Belgica','Belice','Benin','Bielorrusia','Bolivia','Bosnia y Herzegovina','Botsuana','Brasil','Brunei','Bulgaria','Burkina Faso','Burundi','Butan','Cabo Verde','Camboya','Camerun','Canada','Catar','Chad','Chile','China','Chipre','Colombia','Comoras','Congo','Corea del Norte','Corea del Sur','Costa de Marfil','Costa Rica','Croacia','Cuba','Dinamarca','Dominica','Ecuador','Egipto','El Salvador','Emiratos Arabes Unidos','Eritrea','Eslovaquia','Eslovenia','Espana','Estados Unidos','Estonia','Esuatini','Etiopia','Fiyi','Filipinas','Finlandia','Francia','Gabon','Gambia','Georgia','Ghana','Granada','Grecia','Guatemala','Guinea','Guinea-Bisau','Guinea Ecuatorial','Guyana','Haiti','Honduras','Hungria','India','Indonesia','Irak','Iran','Irlanda','Islandia','Islas Marshall','Islas Salomon','Israel','Italia','Jamaica','Japon','Jordania','Kazajistan','Kenia','Kirguistan','Kiribati','Kuwait','Laos','Lesoto','Letonia','Libano','Liberia','Libia','Liechtenstein','Lituania','Luxemburgo','Madagascar','Malasia','Malawi','Maldivas','Mali','Malta','Marruecos','Mauricio','Mauritania','Mexico','Micronesia','Moldavia','Monaco','Mongolia','Montenegro','Mozambique','Namibia','Nauru','Nepal','Nicaragua','Niger','Nigeria','Noruega','Nueva Zelanda','Oman','Paises Bajos','Pakistan','Palaos','Palestina','Panama','Papua Nueva Guinea','Paraguay','Peru','Polonia','Portugal','Reino Unido','Republica Centroafricana','Republica Checa','Republica del Congo','Republica Dominicana','Ruanda','Rumania','Rusia','Samoa','San Cristobal y Nieves','San Marino','San Vicente y Granadinas','Santa Lucia','Santo Tome y Principe','Senegal','Serbia','Seychelles','Sierra Leona','Singapur','Siria','Somalia','Sri Lanka','Sudafrica','Sudan','Sudan del Sur','Suecia','Suiza','Surinam','Tailandia','Tanzania','Tayikistan','Timor Oriental','Togo','Tonga','Trinidad y Tobago','Tunez','Turkmenistan','Turquia','Tuvalu','Ucrania','Uganda','Uruguay','Uzbekistan','Vanuatu','Venezuela','Vietnam','Yemen','Yibuti','Zambia','Zimbabue'];
 
-// ─── ESTADO ──────────────────────────────────────────────────────
-let clienteCount = 0;
+var clienteCount = 0;
 
-// ─── HELPERS ─────────────────────────────────────────────────────
-function paisOptions() {
-  return PAISES.map(p => `<option value="${p}">${p}</option>`).join('');
+function toast(msg, tipo) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + (tipo || '');
+  setTimeout(function(){ t.className = ''; }, 4000);
 }
 
-function productoOptions(selected = '') {
-  return PRODUCTOS.map(p =>
-    `<option value="${p}"${p === selected ? ' selected' : ''}>${p}</option>`
-  ).join('') + `<option value="Otro">Otro…</option>`;
+function paisOpts() {
+  var html = '<option value="">-- Pais --</option>';
+  for (var i = 0; i < PAISES.length; i++) {
+    html += '<option value="' + PAISES[i] + '">' + PAISES[i] + '</option>';
+  }
+  return html;
 }
 
-function makeProductoRow(cid, pid) {
-  return `
-    <div class="producto-row" data-pid="${pid}">
-      <select name="c${cid}_p${pid}_nombre" aria-label="Producto">
-        <option value="" disabled selected>— Producto —</option>
-        ${productoOptions()}
-      </select>
-      <input type="text" name="c${cid}_p${pid}_version"
-             class="version-input" placeholder="Versión" aria-label="Versión"/>
-      <button type="button" class="btn-del-producto"
-              onclick="removeProducto(this)" aria-label="Eliminar producto">✕</button>
-    </div>`;
+function prodOpts() {
+  var html = '<option value="">-- Producto --</option>';
+  for (var i = 0; i < PRODUCTOS.length; i++) {
+    html += '<option value="' + PRODUCTOS[i] + '">' + PRODUCTOS[i] + '</option>';
+  }
+  html += '<option value="Otro">Otro</option>';
+  return html;
 }
 
-function makeClienteCard(cid) {
-  return `
-    <div class="cliente-card" data-cid="${cid}" id="cliente-${cid}">
-      <div class="cliente-header">
-        <span class="cliente-title">Cliente ${cid}</span>
-        <button type="button" class="btn-remove" onclick="removeCliente(${cid})"
-                title="Eliminar cliente">✕</button>
-      </div>
-
-      <div class="grid-2">
-        <div>
-          <label>Nombre del cliente *</label>
-          <input type="text" name="c${cid}_nombre" placeholder="Ej: Empresa ABC" required/>
-        </div>
-        <div>
-          <label>País</label>
-          <select name="c${cid}_pais">
-            <option value="" selected>— Seleccioná —</option>
-            ${paisOptions()}
-          </select>
-        </div>
-      </div>
-
-      <div class="productos-label">Productos</div>
-      <div id="productos-${cid}" class="productos-container">
-        ${makeProductoRow(cid, 1)}
-      </div>
-      <button type="button" class="btn-add-producto"
-              onclick="addProducto(${cid})">＋ Agregar producto</button>
-    </div>`;
-}
-
-// ─── ACCIONES ────────────────────────────────────────────────────
 function addCliente() {
   clienteCount++;
-  const container = document.getElementById('clientes-container');
-  const div = document.createElement('div');
-  div.innerHTML = makeClienteCard(clienteCount);
-  container.appendChild(div.firstElementChild);
+  var cid = clienteCount;
+  var div = document.createElement('div');
+  div.className = 'cliente-card';
+  div.id = 'cliente-' + cid;
+  div.innerHTML =
+    '<div class="cliente-head">' +
+      '<span class="cliente-title">Cliente ' + cid + '</span>' +
+      '<button type="button" class="btn-x" onclick="removeCliente(' + cid + ')">X</button>' +
+    '</div>' +
+    '<div class="grid2">' +
+      '<div><label>Nombre *</label><input type="text" id="c' + cid + '-nombre" placeholder="Nombre del cliente"></div>' +
+      '<div><label>Pais</label><select id="c' + cid + '-pais">' + paisOpts() + '</select></div>' +
+    '</div>' +
+    '<div class="prod-label">Productos</div>' +
+    '<div id="prods-' + cid + '"></div>' +
+    '<button type="button" class="btn-add-prod" onclick="addProducto(' + cid + ')">+ Agregar producto</button>';
+  document.getElementById('clientes-container').appendChild(div);
+  addProducto(cid);
 }
 
 function removeCliente(cid) {
-  const el = document.getElementById(`cliente-${cid}`);
-  if (el) el.remove();
+  var el = document.getElementById('cliente-' + cid);
+  if (el) el.parentNode.removeChild(el);
 }
 
 function addProducto(cid) {
-  const container = document.getElementById(`productos-${cid}`);
-  const existing = container.querySelectorAll('.producto-row');
-  const nextId = existing.length + 1;
-  const div = document.createElement('div');
-  div.innerHTML = makeProductoRow(cid, nextId);
-  container.appendChild(div.firstElementChild);
+  var container = document.getElementById('prods-' + cid);
+  var pid = container.children.length + 1;
+  var row = document.createElement('div');
+  row.className = 'prod-row';
+  row.innerHTML =
+    '<select id="c' + cid + '-p' + pid + '-nombre">' + prodOpts() + '</select>' +
+    '<input type="text" id="c' + cid + '-p' + pid + '-ver" placeholder="Version">' +
+    '<button type="button" class="btn-del" onclick="removeProd(this)">X</button>';
+  container.appendChild(row);
 }
 
-function removeProducto(btn) {
-  const row = btn.closest('.producto-row');
-  const container = row.parentElement;
-  if (container.querySelectorAll('.producto-row').length > 1) {
-    row.remove();
+function removeProd(btn) {
+  var row = btn.parentNode;
+  var container = row.parentNode;
+  if (container.children.length > 1) {
+    container.removeChild(row);
   } else {
-    showToast('Cada cliente necesita al menos un producto.', 'error');
+    toast('Cada cliente necesita al menos un producto.', 'error');
   }
 }
 
-// ─── RECOLECTAR DATOS ────────────────────────────────────────────
 function collectData() {
-  const equipo = document.getElementById('equipo').value;
-  const clienteCards = document.querySelectorAll('.cliente-card');
-  const clientes = [];
-
-  clienteCards.forEach(card => {
-    const cid = card.dataset.cid;
-    const nombre = card.querySelector(`[name="c${cid}_nombre"]`).value.trim();
-    const pais = card.querySelector(`[name="c${cid}_pais"]`).value;
-
-    const productoRows = card.querySelectorAll('.producto-row');
-    const productos = [];
-    productoRows.forEach(row => {
-      const sel = row.querySelector('select');
-      const ver = row.querySelector('input');
-      if (sel.value) {
-        productos.push({ nombre: sel.value, version: ver.value.trim() });
+  var equipo = document.getElementById('equipo').value;
+  var cards = document.getElementById('clientes-container').querySelectorAll('.cliente-card');
+  var clientes = [];
+  for (var i = 0; i < cards.length; i++) {
+    var cid = cards[i].id.replace('cliente-', '');
+    var nombre = document.getElementById('c' + cid + '-nombre').value.trim();
+    var pais = document.getElementById('c' + cid + '-pais').value;
+    var prodRows = document.getElementById('prods-' + cid).querySelectorAll('.prod-row');
+    var productos = [];
+    for (var j = 0; j < prodRows.length; j++) {
+      var sel = prodRows[j].querySelector('select');
+      var ver = prodRows[j].querySelector('input');
+      if (sel && sel.value) {
+        productos.push({ nombre: sel.value, version: ver ? ver.value : '' });
       }
-    });
-
-    clientes.push({ nombre, pais, productos });
-  });
-
-  return { equipo, clientes, timestamp: new Date().toISOString() };
+    }
+    clientes.push({ nombre: nombre, pais: pais, productos: productos });
+  }
+  return { equipo: equipo, clientes: clientes, timestamp: new Date().toISOString() };
 }
 
-// ─── VALIDACIÓN ──────────────────────────────────────────────────
 function validate(data) {
-  if (!data.equipo) return 'Seleccioná un equipo.';
-  if (data.clientes.length === 0) return 'Agregá al menos un cliente.';
-  for (const [i, c] of data.clientes.entries()) {
-    if (!c.nombre) return `El cliente ${i + 1} no tiene nombre.`;
-    if (c.productos.length === 0 || c.productos.every(p => !p.nombre))
-      return `El cliente "${c.nombre || i + 1}" necesita al menos un producto.`;
+  if (!data.equipo) return 'Selecciona un equipo.';
+  if (data.clientes.length === 0) return 'Agrega al menos un cliente.';
+  for (var i = 0; i < data.clientes.length; i++) {
+    if (!data.clientes[i].nombre) return 'El cliente ' + (i+1) + ' no tiene nombre.';
   }
   return null;
 }
 
-// ─── SUBMIT ──────────────────────────────────────────────────────
-document.getElementById('mainForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const data = collectData();
-  const error = validate(data);
-  if (error) { showToast(error, 'error'); return; }
+// Boton Agregar Cliente
+document.getElementById('btn-add-cliente').onclick = function() {
+  if (!document.getElementById('equipo').value) {
+    toast('Primero selecciona un equipo.', 'error');
+    return;
+  }
+  addCliente();
+};
 
-  const btn = document.getElementById('btn-submit');
+// Equipo: actualizar visual del boton
+document.getElementById('equipo').onchange = function() {
+  var btn = document.getElementById('btn-add-cliente');
+  if (this.value) {
+    btn.classList.remove('disabled');
+  } else {
+    btn.classList.add('disabled');
+  }
+};
+
+// Enviar
+document.getElementById('btn-submit').onclick = function() {
+  var data = collectData();
+  var err = validate(data);
+  if (err) { toast(err, 'error'); return; }
+
+  var btn = this;
   btn.disabled = true;
-  btn.textContent = 'Enviando…';
+  btn.textContent = 'Enviando...';
 
-  try {
-    // Envío via iframe oculto para evitar restricciones CORS de Google Apps Script
-    await submitViaIframe(data);
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = WEBHOOK;
+  form.target = 'iframe-oculto';
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 
-    showToast('✅ ¡Enviado correctamente! Gracias.', 'success');
-    document.getElementById('mainForm').reset();
+  setTimeout(function() {
+    toast('Enviado correctamente. Gracias!', 'success');
     document.getElementById('clientes-container').innerHTML = '';
+    document.getElementById('equipo').value = '';
+    document.getElementById('btn-add-cliente').classList.add('disabled');
     clienteCount = 0;
-    setBotonCliente();
-  } catch (err) {
-    console.error(err);
-    showToast('Error al enviar. Verificá tu conexión e intentá de nuevo.', 'error');
-  } finally {
     btn.disabled = false;
     btn.textContent = 'Enviar';
-  }
-});
-
-// ─── SUBMIT VIA IFRAME (evita CORS de Google Apps Script) ────────
-function submitViaIframe(data) {
-  return new Promise((resolve) => {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = WEBHOOK_URL;
-    form.target = 'hidden-iframe';
-
-    const input = document.createElement('input');
-    input.type  = 'hidden';
-    input.name  = 'data';
-    input.value = JSON.stringify(data);
-    form.appendChild(input);
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    // Esperar un momento para que el iframe procese la respuesta
-    setTimeout(resolve, 1500);
-  });
-}
-
-// ─── TOAST ───────────────────────────────────────────────────────
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `show ${type}`;
+  }, 1500);
+};
+</script>
+</body>
+</html>
